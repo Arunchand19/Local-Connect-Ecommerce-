@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container */
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Header */
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 30px;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+/* Cards container */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Card styling */
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  perspective: 1000px;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+  background: #007BFF;
+  color: #fff;
+  margin: 0;
+  padding: 15px;
+  font-size: 1.5rem;
+}
+
+.card-content {
+  padding: 15px;
+}
+
+/* Card item style */
+.card-item {
+  margin-bottom: 10px;
+}
+
+.card-item strong {
+  color: #555;
+}
+
+/* Customer card styling */
+.customer-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.customer {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.customer-img img {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border: 3px solid #007BFF;
+  transition: transform 0.3s ease;
+}
+
+.customer-img img:hover {
+  transform: scale(1.1);
+}
+
+.customer-info h3 {
+  margin: 0 0 5px;
+}
+
+/* Task card styling */
+.task-card {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+.task-card:hover {
+  transform: scale(1.02);
+}
+
+/* Priority color codes */
+.task-card.high {
+  border-left: 5px solid #e74c3c;
+}
+.task-card.low {
+  border-left: 5px solid #27ae60;
+}
+
+/* Buttons */
+.btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+.btn.accept {
+  background: #27ae60;
+  color: #fff;
+}
+
+.btn.reject {
+  background: #e74c3c;
+  color: #fff;
+}
+
+.feedback-section textarea {
+  width: 100%;
+  height: 80px;
+  margin: 10px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: vertical;
+}
+
+/* Collapsible card (for work history & reports) */
+.collapsible .card-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Notifications styling */
+.notifications-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.notifications-card li {
+  background: #f1f1f1;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+/* Animation keyframes */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Additional responsiveness */
+@media (max-width: 768px) {
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+}
