@@ -18,7 +18,7 @@ const LoginPage = () => {
   });
 
   const [loginData, setLoginData] = useState({
-    username: "",
+    identifier: "",
     password: "",
   });
 
@@ -45,7 +45,7 @@ const LoginPage = () => {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/signup", {
+      const response = await axios.post("http://localhost:5001/api/auth/signup", {
         username: signupData.username,
         phone: signupData.phone,
         email: signupData.email,
@@ -63,8 +63,8 @@ const LoginPage = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
-        username: loginData.username,
+      const response = await axios.post("http://localhost:5001/api/auth/login", {
+        identifier: loginData.identifier,
         password: loginData.password,
       });
       console.log("Login response:", response.data);
@@ -73,7 +73,7 @@ const LoginPage = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
-      alert(error.response?.data?.error || "Login failed");
+      alert(error.response?.data?.error || "Invalid credentials. Please check your username/email and password.");
     }
   };
 
@@ -113,9 +113,9 @@ const LoginPage = () => {
                     <input
                       type="text"
                       className="form-control input-field"
-                      name="username"
-                      placeholder="User Name"
-                      value={loginData.username}
+                      name="identifier"
+                      placeholder="Username or Email"
+                      value={loginData.identifier}
                       onChange={handleLoginChange}
                       required
                     />

@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
     type: String, 
     required: true 
   },
+  __v: {
+    type: Number,
+    select: false
+  }
 });
 
-module.exports = (connection) => connection.model("User", userSchema);
+// Export with explicit collection name to match the database image (test.users)
+module.exports = (connection) => connection.model("User", userSchema, "users");

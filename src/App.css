@@ -730,3 +730,17 @@ button {
   50% { transform: scale(1.05); }
   100% { transform: scale(1); }
 }
+
+/* ------------------------- */
+/* Cart Icon Styles */
+/* ------------------------- */
+.cart-count {
+  background-color: red;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 50%;
+  margin-left: 4px;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  vertical-align: super;
+}

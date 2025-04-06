@@ -23,6 +23,7 @@ const WorkerForm = () => {
     age: "",
     gender: "",
     country: "",
+    costPerHour: "",
     profilePhoto: null,
   });
 
@@ -68,12 +69,13 @@ const WorkerForm = () => {
     data.append("email", formData.email);
     data.append("age", formData.age);
     data.append("gender", formData.gender);
+    data.append("costPerHour", formData.costPerHour);
     if (formData.profilePhoto) {
       data.append("profilePhoto", formData.profilePhoto);
     }
 
     try {
-      await axios.post("http://localhost:5000/api/worker-form", data, {
+      await axios.post("http://localhost:5001/api/worker-form", data, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -331,6 +333,19 @@ const WorkerForm = () => {
               <option value="other">Other</option>
             </select>
           </div>
+        </div>
+
+        {/* New Cost per hour field */}
+        <div className="form-group">
+          <label>Cost per hour</label>
+          <input
+            type="text"
+            name="costPerHour"
+            value={formData.costPerHour}
+            onChange={handleChange}
+            placeholder="Ex: 50"
+            required
+          />
         </div>
 
         <div className="form-group">

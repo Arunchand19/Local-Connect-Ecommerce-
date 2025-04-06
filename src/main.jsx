@@ -10,7 +10,6 @@ import setupLocatorUI from "@locator/runtime";
 if (process.env.NODE_ENV === "development") {
   setupLocatorUI();
 }
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthProvider>

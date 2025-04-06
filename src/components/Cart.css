@@ -1,0 +1,300 @@
+/* Cart.css */
+.cart-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+  
+  .cart-header h1 {
+    font-size: 28px;
+    color: #333;
+  }
+  
+  .clear-cart-btn {
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .clear-cart-btn:hover {
+    background-color: #ff1a1a;
+  }
+  
+  .empty-cart {
+    text-align: center;
+    padding: 40px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+  
+  .empty-cart p {
+    font-size: 18px;
+    color: #666;
+  }
+  
+  .cart-content {
+    display: flex;
+    gap: 30px;
+  }
+  
+  .cart-summary {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .order-details {
+    flex: 1;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-summary h2, .order-summary h2, .pickup-time h2, .location-section h2, .date-section h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+  }
+  
+  .cart-items-list {
+    margin-bottom: 20px;
+  }
+  
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .item-info h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .item-role {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .item-price {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .remove-item-btn {
+    background: none;
+    border: none;
+    color: #ff3b30;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 10px;
+  }
+  
+  .applied-promo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f0fff4;
+    border: 1px solid #c6f6d5;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .discount-amount {
+    color: #38a169;
+    font-weight: bold;
+  }
+  
+  .discount-row {
+    color: #38a169;
+  }
+  
+  .promotion-section {
+    margin-top: 20px;
+  }
+  
+  .promo-input {
+    display: flex;
+    margin-top: 10px;
+  }
+  
+  .promo-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+  }
+  
+  .apply-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 0 15px;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+  }
+  
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .total-row {
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 10px;
+    border-bottom: none;
+  }
+  
+  .pickup-time, .location-section, .date-section {
+    margin-top: 25px;
+  }
+  
+  .time-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .time-option {
+    flex: 1;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .time-option.selected {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+  }
+  
+  .time-slots {
+    margin-top: 15px;
+  }
+  
+  .time-slots h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .time-slot {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .time-slot:hover {
+    background-color: #f8f9fa;
+  }
+  
+  .time-slot.selected {
+    border-color: #007bff;
+    background-color: #e7f3ff;
+  }
+  
+  .location-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .location-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  .get-location-btn {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    padding: 0 15px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .get-location-btn:hover {
+    background-color: #e9ecef;
+  }
+  
+  .map-preview {
+    margin-top: 15px;
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .date-section input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .payment-btn {
+    width: 100%;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 4px;
+    margin-top: 25px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .payment-btn:hover {
+    background-color: #218838;
+  }
+  
+  @media (max-width: 768px) {
+    .cart-content {
+      flex-direction: column;
+    }
+    
+    .slot-grid {
+      grid-template-columns: 1fr;
+    }
+  }

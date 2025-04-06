@@ -36,24 +36,58 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Login
+// Login - updated to accept either username or email
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
-    // Find user by username
-    const user = await User.findOne({ username });
+    const { identifier, password } = req.body;
+    console.log("Login attempt with identifier:", identifier);
+    
+    // Check if identifier is empty
+    if (!identifier) {
+      return res.status(400).json({ error: "Username or email is required" });
+    }
+    
+    // Find user by username or email
+    const user = await User.findOne({
+      $or: [
+        { username: identifier },
+        { email: identifier }
+      ]
+    });
+    
     if (!user) {
+      console.log("User not found with identifier:", identifier);
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    // Compare password
-    const isMatch = await bcrypt.compare(password, user.password);
+    
+    console.log("User found:", user.username);
+    
+    // Compare password - try direct comparison first for imported data
+    let isMatch = false;
+    
+    // Try direct comparison (in case of imported data without hashing)
+    if (password === user.password) {
+      console.log("Direct password match");
+      isMatch = true;
+    } else {
+      // Try bcrypt comparison for hashed passwords
+      try {
+        isMatch = await bcrypt.compare(password, user.password);
+        console.log("Bcrypt comparison result:", isMatch);
+      } catch (err) {
+        console.error("Bcrypt comparison failed:", err);
+      }
+    }
+    
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+    
     // Generate JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+    
     return res.status(200).json({
       message: "Login successful",
       token,

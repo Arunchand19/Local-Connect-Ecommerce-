@@ -2,18 +2,18 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
 
-// Connect to "users" DB
+// Connect to "local" DB for customer users data
 const userConnection = mongoose.createConnection(process.env.MONGO_URI_USERS);
 
 userConnection.on("connected", () => {
-  console.log("User MongoDB connected");
+  console.log("User MongoDB connected to local database");
 });
 
 userConnection.on("error", (err) => {
   console.error("User MongoDB connection error:", err);
 });
 
-// Connect to "Form" DB (for WorkerForm)
+// Connect to "Form" DB for worker data
 const workerConnection = mongoose.createConnection(process.env.MONGO_URI_WORKERS);
 
 workerConnection.on("connected", () => {

@@ -53,5 +53,5 @@ const workerFormSchema = new mongoose.Schema({
   },
 });
 
-// The third argument ensures the collection name is exactly "WorkerForm"
-module.exports = workerConnection.model("WorkerForm", workerFormSchema, "WorkerForm");
+// Updated to match the exact collection path shown in MongoDB Atlas
+module.exports = workerConnection.model("WorkerForm", workerFormSchema, "Form.Form.WorkerForm");

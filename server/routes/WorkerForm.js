@@ -24,6 +24,7 @@ router.post("/", upload.single("profilePhoto"), async (req, res) => {
       email,
       age,
       gender,
+      costPerHour,
     } = req.body;
 
     // Parse workerTypes from string to object
@@ -44,6 +45,7 @@ router.post("/", upload.single("profilePhoto"), async (req, res) => {
       email,
       age,
       gender,
+      costPerHour,
       profilePhoto: {
         data: null,
         contentType: null,
@@ -63,6 +65,61 @@ router.post("/", upload.single("profilePhoto"), async (req, res) => {
   } catch (error) {
     console.error("Error saving worker details:", error);
     res.status(500).json({ error: "Submission failed" });
+  }
+});
+
+// GET /api/worker-form/by-type/:type
+// Fetch workers by their service type (acRepair, mechanicRepair, etc)
+router.get("/by-type/:type", async (req, res) => {
+  try {
+    const serviceType = req.params.type;
+    
+    // Validate service type
+    const validTypes = ['acRepair', 'mechanicRepair', 'electricalRepair', 'electronicRepair', 'plumber', 'packersMovers'];
+    if (!validTypes.includes(serviceType)) {
+      return res.status(400).json({ error: "Invalid service type" });
+    }
+
+    // Create the query to find workers who offer this service
+    const query = {};
+    query[`workerTypes.${serviceType}`] = true;
+
+    // Find workers matching the criteria
+    const workers = await WorkerForm.find(query);
+    
+    res.status(200).json(workers);
+  } catch (error) {
+    console.error("Error fetching workers by type:", error);
+    res.status(500).json({ error: "Failed to fetch workers" });
+  }
+});
+
+// GET /api/worker-form/all
+// Fetch all workers
+router.get("/all", async (req, res) => {
+  try {
+    const workers = await WorkerForm.find({});
+    res.status(200).json(workers);
+  } catch (error) {
+    console.error("Error fetching all workers:", error);
+    res.status(500).json({ error: "Failed to fetch workers" });
+  }
+});
+
+// GET /api/worker-form/:id
+// Fetch a specific worker by ID
+router.get("/:id", async (req, res) => {
+  try {
+    const worker = await WorkerForm.findById(req.params.id);
+    
+    if (!worker) {
+      return res.status(404).json({ error: "Worker not found" });
+    }
+    
+    res.status(200).json(worker);
+  } catch (error) {
+    console.error("Error fetching worker by ID:", error);
+    res.status(500).json({ error: "Failed to fetch worker details" });
   }
 });
 

@@ -47,7 +47,7 @@ const WorkerLogin = () => {
     e.preventDefault();
     try {
       // Posting sign-up data to the API endpoint
-      await axios.post("http://localhost:5000/api/worker-auth/signup", signupData);
+      await axios.post("http://localhost:5001/api/worker-auth/signup", signupData);
       alert("Sign up successful! Please complete your worker details.");
       // Navigate to the new WorkerForm page after successful signup
       navigate("/worker-form");
@@ -59,7 +59,7 @@ const WorkerLogin = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5000/api/worker-auth/login", loginData);
+      const response = await axios.post("http://localhost:5001/api/worker-auth/login", loginData);
       const { token, user } = response.data;
       login(token, user);
       navigate(from, { replace: true });
