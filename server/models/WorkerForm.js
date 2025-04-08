@@ -46,6 +46,11 @@ const workerFormSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  costPerHour: {
+    type: String,
+    required: false,
+    default: "",
+  },
   // Store the actual image data in MongoDB
   profilePhoto: {
     data: Buffer,

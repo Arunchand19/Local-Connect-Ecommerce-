@@ -14,7 +14,7 @@ const TicketSection = () => {
       <h2>Sell and Buy Tickets</h2>
       <div className="ticket-grid">
         {ticketSectors.map((sector) => (
-          <Link key={sector.id} to={`/tickets/${sector.id}`} className="logo-card">
+          <Link key={sector.id} to={`/tickets/sellbuy/${sector.id}`} className="logo-card">
             <div className="worker-logo">{sector.icon}</div>
             <h3>{sector.name}</h3>
             <p className="category-description">{sector.description}</p>

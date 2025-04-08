@@ -1,0 +1,152 @@
+/* TicketList.css - Shared styles for ticket listing displays */
+
+.ticket-list-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+}
+
+.ticket-list-container h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.ticket-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.ticket-card {
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.ticket-image-container {
+  height: 160px;
+  overflow: hidden;
+}
+
+.ticket-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.ticket-card:hover .ticket-image {
+  transform: scale(1.05);
+}
+
+.ticket-info {
+  padding: 1.2rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-info h3 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+  color: #2c3e50;
+}
+
+.ticket-details {
+  flex-grow: 1;
+}
+
+.ticket-details p {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.ticket-price {
+  font-size: 1.1rem !important;
+  color: #e74c3c !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem !important;
+}
+
+.tickets-available {
+  font-size: 1rem !important;
+  color: #27ae60 !important;
+  margin-bottom: 1rem !important;
+  font-weight: 500;
+}
+
+.buy-ticket-btn {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 0.7rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+  margin-top: auto;
+  transition: background-color 0.2s ease;
+}
+
+.buy-ticket-btn:hover {
+  background-color: #2980b9;
+}
+
+.loading-container,
+.error-container,
+.no-tickets-container {
+  text-align: center;
+  padding: 3rem 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 2rem auto;
+  max-width: 800px;
+}
+
+.loading-container {
+  color: #3498db;
+  font-size: 1.2rem;
+}
+
+.error-container {
+  color: #e74c3c;
+  font-size: 1.1rem;
+}
+
+.no-tickets-container {
+  color: #7f8c8d;
+  font-size: 1.1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ticket-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  
+  .ticket-list-container {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .ticket-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ticket-image-container {
+    height: 180px;
+  }
+} 

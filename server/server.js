@@ -19,10 +19,14 @@ const workerAuthRoutes = require("./routes/workerAuth");
 // The new WorkerForm routes
 const workerFormRoutes = require("./routes/WorkerForm");
 
+// The new Ticket routes
+const ticketRoutes = require("./routes/tickets");
+
 // Use the routes
 app.use("/api/auth", authRoutes);
 app.use("/api/worker-auth", workerAuthRoutes);
 app.use("/api/worker-form", workerFormRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

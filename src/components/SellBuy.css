@@ -1,0 +1,82 @@
+.sellbuy-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: fadeInUp 0.5s ease;
+}
+
+.sellbuy-container h2 {
+  margin-bottom: 2rem;
+  color: #333;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.options-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.sellbuy-button {
+  padding: 1.5rem 2.5rem;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+  width: 180px;
+  height: 180px;
+  justify-content: center;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+}
+
+.sell-button {
+  background: linear-gradient(to bottom right, #4caf50, #2e7d32);
+  color: white;
+}
+
+.sell-button:hover {
+  background: linear-gradient(to bottom right, #43a047, #2e7d32);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(46, 125, 50, 0.25);
+}
+
+.buy-button {
+  background: linear-gradient(to bottom right, #2196f3, #1565c0);
+  color: white;
+}
+
+.buy-button:hover {
+  background: linear-gradient(to bottom right, #1e88e5, #1565c0);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(21, 101, 192, 0.25);
+}
+
+@media (max-width: 576px) {
+  .options-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sellbuy-button {
+    width: 160px;
+    height: 160px;
+  }
+} 

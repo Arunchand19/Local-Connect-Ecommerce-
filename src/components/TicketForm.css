@@ -1,0 +1,192 @@
+/* TicketForm.css - Shared styles for all ticket form components */
+
+.ticket-form-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ticket-form-container h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.status-message {
+  margin-bottom: 1.5rem;
+  padding: 12px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.status-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.error-summary {
+  margin-bottom: 1.5rem;
+  padding: 12px;
+  background-color: #fff3f3;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #721c24;
+}
+
+.error-summary p {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.error-summary ul {
+  margin-left: 1.5rem;
+}
+
+.form-section {
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.form-section:last-child {
+  border-bottom: none;
+}
+
+.form-section h3 {
+  color: #3498db;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  flex: 1;
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group input[type="number"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.form-group input[type="file"] {
+  padding: 8px 0;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.form-group input.error,
+.form-group select.error,
+.form-group textarea.error {
+  border-color: #dc3545;
+  background-color: #fff8f8;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.submit-button,
+.cancel-button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  flex: 1;
+}
+
+.submit-button:hover {
+  background-color: #2980b9;
+}
+
+.cancel-button {
+  background-color: #f8f9fa;
+  color: #495057;
+  border: 1px solid #ddd;
+  flex: 0.5;
+}
+
+.cancel-button:hover {
+  background-color: #e2e6ea;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ticket-form-container {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .submit-button,
+  .cancel-button {
+    width: 100%;
+  }
+}

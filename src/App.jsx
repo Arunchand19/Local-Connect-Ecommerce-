@@ -13,59 +13,146 @@ import Footer from "./components/Footer";
 import Select from "./components/Select";
 import WorkerLogin from "./components/WorkerLogin";
 import WorkersDashboard from "./components/WorkersDashboard";
-import WorkerForm from "./components/WorkerForm";
-import Chatbox from "./components/Chatbox";
+
 import Cart from "./components/Cart";             // New Cart page
 import { AuthProvider } from "./AuthContext";       // Existing Auth context
 import { CartProvider } from "./components/CartContext";       // New Cart context
+import WorkerForm from "./components/WorkerForm";  // Import the new WorkerForm
+import Chatbox from "./components/Chatbox"; 
+import SellBuy from "./components/SellBuy";
+import ConcertForm from "./components/ConcertForm";
+import SportsForm from "./components/SportsForm";
+import TheaterForm from "./components/TheaterForm";
+import FestivalsForm from "./components/FestivalsForm";
+import ConcertTicketList from "./components/ConcertTicketList";
+import SportsTicketList from "./components/SportsTicketList";
+import TheaterTicketList from "./components/TheaterTicketList";
+import FestivalsTicketList from "./components/FestivalsTicketList";
 
 function App() {
   const location = useLocation();
   const showSlider = location.pathname === "/workers";
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <div className="App">
-          <Navbar />
-          {showSlider && <ImageSlider />}
-          <Routes>
-            <Route path="/" element={<Navigate to="/workers" />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/workers" element={<WorkerSection />} />
-            <Route path="/select" element={<Select />} />
-            <Route path="/worker-login" element={<WorkerLogin />} />
-            <Route path="/worker-form" element={<WorkerForm />} />
-            <Route 
-              path="/workers-dashboard" 
-              element={
-                <ProtectedRoute>
-                  <WorkersDashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/workers/:categoryId"
-              element={
-                <ProtectedRoute>
-                  <WorkerDetailsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/tickets" element={<TicketSection />} />
-            <Route
-              path="/tickets/:sectorId"
-              element={
-                <ProtectedRoute>
-                  <TicketDetailsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/cart" element={<Cart />} /> {/* New Cart route */}
-          </Routes>
-          <Footer />
-          <Chatbox />
-        </div>
+
+<AuthProvider>
+<CartProvider>
+    <div className="App">
+      <Navbar />
+      {showSlider && <ImageSlider />}
+      <Routes>
+        <Route path="/" element={<Navigate to="/workers" />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/workers" element={<WorkerSection />} />
+        <Route path="/select" element={<Select />} />
+        <Route path="/worker-login" element={<WorkerLogin />} />
+        <Route path="/worker-form" element={<WorkerForm />} />
+        <Route 
+          path="/workers-dashboard" 
+          element={
+            <ProtectedRoute>
+              <WorkersDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/workers/:categoryId"
+          element={
+            <ProtectedRoute>
+              <WorkerDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/tickets" element={<TicketSection />} />
+        <Route
+          path="/tickets/sellbuy/:sectorId"
+          element={
+            <ProtectedRoute>
+              <SellBuy />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tickets/concert/form"
+          element={
+            <ProtectedRoute>
+              <ConcertForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/sports/form"
+          element={
+            <ProtectedRoute>
+              <SportsForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/theater/form"
+          element={
+            <ProtectedRoute>
+              <TheaterForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/festivals/form"
+          element={
+            <ProtectedRoute>
+              <FestivalsForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/concert"
+          element={
+            <ProtectedRoute>
+              <ConcertTicketList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/sports"
+          element={
+            <ProtectedRoute>
+              <SportsTicketList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/theater"
+          element={
+            <ProtectedRoute>
+              <TheaterTicketList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/festival"
+          element={
+            <ProtectedRoute>
+              <FestivalsTicketList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/tickets/:sectorId"
+          element={
+            <ProtectedRoute>
+              <TicketDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+
+<Route path="/cart" element={<Cart />} /> {/* New Cart route */}
+
+      </Routes>
+      <Footer />
+      <Chatbox />
+    </div>
+
       </CartProvider>
     </AuthProvider>
   );

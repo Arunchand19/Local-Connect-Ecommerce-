@@ -343,7 +343,7 @@ const WorkerForm = () => {
             name="costPerHour"
             value={formData.costPerHour}
             onChange={handleChange}
-            placeholder="Ex: 50"
+            placeholder="Enter the amount in Rupees"
             required
           />
         </div>
