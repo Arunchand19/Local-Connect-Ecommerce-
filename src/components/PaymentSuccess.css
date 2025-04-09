@@ -1,0 +1,160 @@
+.payment-success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  position: relative;
+  overflow: hidden;
+}
+
+.success-card {
+  max-width: 600px;
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  text-align: center;
+  animation: fadeIn 0.5s ease-out;
+  z-index: 10;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.success-icon {
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0 auto 20px;
+  background-color: rgba(40, 167, 69, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.animate-checkmark {
+  animation: scaleCheckmark 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  transform: scale(0);
+}
+
+@keyframes scaleCheckmark {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.success-icon svg {
+  width: 30px;
+  height: 30px;
+  color: #28a745;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: drawCheck 1s ease-in-out forwards 0.4s;
+}
+
+@keyframes drawCheck {
+  from { stroke-dashoffset: 80; }
+  to { stroke-dashoffset: 0; }
+}
+
+.success-card h1 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.success-card p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.order-details {
+  margin: 24px 0;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.order-details p {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.success-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.go-home-btn {
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.go-home-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Animation classes */
+.animate-fade-in {
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-delay-1 {
+  animation-delay: 0.4s;
+}
+
+.animate-delay-2 {
+  animation-delay: 0.8s;
+}
+
+.animate-delay-3 {
+  animation-delay: 1.2s;
+}
+
+.animate-delay-4 {
+  animation-delay: 1.6s;
+}
+
+/* Confetti Animation */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: -10px;
+  animation: confettiRain 5s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes confettiRain {
+  0% {
+    transform: translateY(0) rotateZ(0deg);
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotateZ(720deg);
+    opacity: 0;
+  }
+} 
