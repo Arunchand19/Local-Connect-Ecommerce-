@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect, useContext } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { CartContext } from './CartContext';
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
@@ -11,6 +11,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +35,28 @@ const Navbar = () => {
     navigate('/');
   };
 
+  // Function to scroll to workers section
+  const scrollToWorkers = (e) => {
+    e.preventDefault(); // Prevent default link behavior
+    const workersSection = document.getElementById('workers-availability');
+    
+    if (location.pathname !== '/') {
+      // If not on home page, navigate to home first
+      navigate('/');
+      // Wait for navigation to complete then scroll
+      setTimeout(() => {
+        const section = document.getElementById('workers-availability');
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else if (workersSection) {
+      // Already on home page, just scroll
+      workersSection.scrollIntoView({ behavior: 'smooth' });
+      closeMenu();
+    }
+  };
+
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
@@ -52,13 +75,13 @@ const Navbar = () => {
             Home
           </NavLink>
 
-          <NavLink
-            to="/workers"
-            className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
-            onClick={closeMenu}
+          <a
+            href="#workers-availability"
+            className="nav-item"
+            onClick={scrollToWorkers}
           >
             Workers
-          </NavLink>
+          </a>
 
           <NavLink
             to="/tickets"

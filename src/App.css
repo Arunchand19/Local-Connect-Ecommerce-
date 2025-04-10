@@ -497,11 +497,13 @@ button {
 
 @keyframes slide {
   0% { transform: translateX(0); }
-  25% { transform: translateX(0); }
-  33.33% { transform: translateX(-100%); }
-  58.33% { transform: translateX(-100%); }
-  66.66% { transform: translateX(-200%); }
-  91.66% { transform: translateX(-200%); }
+  20% { transform: translateX(0); }
+  25% { transform: translateX(-100%); }
+  45% { transform: translateX(-100%); }
+  50% { transform: translateX(-200%); }
+  70% { transform: translateX(-200%); }
+  75% { transform: translateX(-300%); }
+  95% { transform: translateX(-300%); }
   100% { transform: translateX(0); }
 }
 
@@ -743,4 +745,150 @@ button {
   margin-top: 20px;
   font-size: 0.8rem;
   vertical-align: super;
+}
+
+/* Add smooth scrolling behavior to html */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hero section styles */
+.hero-section {
+  background-image: url('/images/mechanical-repair.jpg');
+  background-size: cover;
+  background-position: center;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: white;
+  margin-bottom: 50px;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 30, 0.6);
+}
+
+.hero-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+  padding: 0 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  max-width: 600px;
+  line-height: 1.6;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.hero-btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #0066ff;
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);
+}
+
+.hero-btn:hover {
+  background: #004dbd;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4);
+}
+
+/* Make Workers Availability section more prominent */
+#workers-availability {
+  scroll-margin-top: 80px; /* Adjust based on navbar height */
+  padding-top: 30px;
+  padding-bottom: 50px;
+}
+
+#workers-availability h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #333;
+  position: relative;
+}
+
+#workers-availability h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: #0066ff;
+  border-radius: 2px;
+}
+
+/* Ticket section styling */
+#ticket-section {
+  scroll-margin-top: 80px; /* Adjust based on navbar height */
+  padding-top: 30px;
+  padding-bottom: 50px;
+  margin-top: 20px;
+}
+
+#ticket-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  color: #333;
+  position: relative;
+}
+
+#ticket-section h2::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: #0066ff;
+  border-radius: 2px;
+}
+
+/* Adjust slider for tickets page */
+.tickets-page .slider-container {
+  margin-bottom: 30px;
+}
+
+/* Enhance slider content for better readability */
+.slider-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem;
+  color: white;
+  text-align: left;
+  z-index: 2;
+  transform: translateY(0);
+  opacity: 1;
+  animation: fadeInLeft 1s ease-out forwards;
+  max-width: 600px;
 }

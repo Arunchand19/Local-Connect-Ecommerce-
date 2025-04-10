@@ -66,9 +66,14 @@ const WorkerDetails = ({ workers }) => {
 
         // Handler to add worker to cart
         const handleBookNow = () => {
-          addToCart(worker);
-          // Optionally navigate to cart immediately, or show a toast, etc.
-          // e.g. navigate('/cart');
+          const workerToAdd = {
+            ...worker,
+            price: worker.costPerHour || 1000, // Default price if not set
+            quantity: 1
+          };
+          addToCart(workerToAdd);
+          // Show a success message or notification here
+          alert('Worker added to cart successfully!');
         };
 
         

@@ -14,7 +14,7 @@ const workerCategories = [
 
 const WorkerSection = () => {
   return (
-    <div className="enhanced-section-container">
+    <div className="enhanced-section-container" id="workers-availability">
       <h2>Workers Availability</h2>
       <div className="worker-grid">
         {workerCategories.map((category) => (

@@ -15,6 +15,7 @@ import WorkerLogin from "./components/WorkerLogin";
 import WorkersDashboard from "./components/WorkersDashboard";
 
 import Cart from "./components/Cart";             // New Cart page
+import PaymentSuccess from "./components/PaymentSuccess"; // Payment success page
 import { AuthProvider } from "./AuthContext";       // Existing Auth context
 import { CartProvider } from "./components/CartContext";       // New Cart context
 import WorkerForm from "./components/WorkerForm";  // Import the new WorkerForm
@@ -31,7 +32,7 @@ import FestivalsTicketList from "./components/FestivalsTicketList";
 
 function App() {
   const location = useLocation();
-  const showSlider = location.pathname === "/workers";
+  const showSlider = location.pathname === "/" || location.pathname === "/workers" || location.pathname === "/tickets";
 
   return (
 
@@ -41,9 +42,13 @@ function App() {
       <Navbar />
       {showSlider && <ImageSlider />}
       <Routes>
-        <Route path="/" element={<Navigate to="/workers" />} />
+        <Route path="/" element={
+          <>
+            <WorkerSection />
+          </>
+        } />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/workers" element={<WorkerSection />} />
+        <Route path="/workers" element={<Navigate to="/" />} />
         <Route path="/select" element={<Select />} />
         <Route path="/worker-login" element={<WorkerLogin />} />
         <Route path="/worker-form" element={<WorkerForm />} />
@@ -147,6 +152,7 @@ function App() {
         />
 
 <Route path="/cart" element={<Cart />} /> {/* New Cart route */}
+<Route path="/payment-success" element={<PaymentSuccess />} /> {/* Payment success route */}
 
       </Routes>
       <Footer />
