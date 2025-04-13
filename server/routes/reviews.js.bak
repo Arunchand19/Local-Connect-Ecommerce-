@@ -1,0 +1,685 @@
+const express = require("express");
+const router = express.Router();
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
+const { v4: uuidv4 } = require("uuid");
+const mysql = require("mysql2/promise");
+const dotenv = require("dotenv");
+
+// IMPORTANT NOTE ABOUT ROUTES:
+// Route order matters in Express. More specific routes (like /published) must be defined
+// before parameter routes (like /:id) to avoid conflicts.
+
+// Load environment variables
+dotenv.config();
+
+// First create a connection without specifying a database
+const createDbConnection = mysql.createPool({
+  host: process.env.MYSQL_HOST || 'localhost',
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || '',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+// Create a MySQL connection pool (to be used after database is ensured)
+const pool = mysql.createPool({
+  host: process.env.MYSQL_HOST || 'localhost',
+  user: process.env.MYSQL_USER || 'root',
+  password: process.env.MYSQL_PASSWORD || '',
+  database: process.env.MYSQL_DATABASE || 'local_connect_db',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+// Ensure upload directories exist
+const uploadDir = path.join(__dirname, "../uploads");
+const reviewImagesDir = path.join(uploadDir, "reviews");
+
+// Create directories if they don't exist
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+if (!fs.existsSync(reviewImagesDir)) {
+  fs.mkdirSync(reviewImagesDir);
+}
+
+// Setup multer for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, reviewImagesDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueId = uuidv4();
+    cb(null, `${uniqueId}-${file.originalname}`);
+  },
+});
+
+// File filter to validate image uploads
+const fileFilter = (req, file, cb) => {
+  // Accept image files only
+  if (file.mimetype.startsWith("image/")) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only image files are allowed!"), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+  },
+});
+
+// Handle multiple file upload fields
+const uploadFields = upload.fields([
+  { name: 'reviewImages', maxCount: 5 },
+  { name: 'additionalImages', maxCount: 5 }
+]);
+
+// Ensure the MySQL database and tables exist
+const initializeDatabase = async () => {
+  try {
+    // First create database if it doesn't exist
+    const connection = await createDbConnection.getConnection();
+    const dbName = process.env.MYSQL_DATABASE || 'local_connect_db';
+    
+    // Create database if it doesn't exist
+    await connection.query(`CREATE DATABASE IF NOT EXISTS ${dbName}`);
+    connection.release();
+    
+    console.log(`Database ${dbName} ensured`);
+    
+    // Now create tables in the database
+    const dbConnection = await pool.getConnection();
+    
+    // Create the reviews table if it doesn't exist
+    await dbConnection.query(`
+      CREATE TABLE IF NOT EXISTS reviews (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        is_anonymous TINYINT(1) DEFAULT 0,
+        order_number VARCHAR(50) NOT NULL,
+        product_name VARCHAR(255),
+        overall_satisfaction INT NOT NULL,
+        quality_of_work INT NOT NULL,
+        timeliness INT NOT NULL,
+        accuracy INT NOT NULL,
+        written_review TEXT NOT NULL,
+        worker_name VARCHAR(255) NOT NULL,
+        communication_skills INT NOT NULL,
+        professionalism INT NOT NULL,
+        would_recommend TINYINT(1) DEFAULT 1,
+        follow_up_needed TINYINT(1) DEFAULT 0,
+        has_issue TINYINT(1) DEFAULT 0,
+        issue_type VARCHAR(50),
+        issue_description TEXT,
+        consent_to_publish TINYINT(1) DEFAULT 1,
+        status VARCHAR(20) DEFAULT 'pending',
+        created_at DATETIME NOT NULL
+      )
+    `);
+    
+    // Create the review_images table if it doesn't exist
+    await dbConnection.query(`
+      CREATE TABLE IF NOT EXISTS review_images (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        review_id INT NOT NULL,
+        filename VARCHAR(255) NOT NULL,
+        file_path VARCHAR(255) NOT NULL,
+        mime_type VARCHAR(100) NOT NULL,
+        image_type ENUM('review', 'issue') DEFAULT 'review',
+        FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE
+      )
+    `);
+    
+    dbConnection.release();
+    console.log("MySQL database tables initialized successfully");
+  } catch (error) {
+    console.error("Error initializing MySQL database tables:", error);
+  }
+};
+
+// Initialize database tables when the server starts
+initializeDatabase();
+
+// POST /api/reviews - Submit a new review
+router.post("/", upload.array("files", 5), async (req, res) => {
+  uploadFields(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      // A Multer error occurred when uploading
+      console.error("Multer error:", err);
+      return res.status(400).json({
+        success: false,
+        message: `File upload error: ${err.message}`,
+      });
+    } else if (err) {
+      // An unknown error occurred
+      console.error("Unknown error:", err);
+      return res.status(500).json({
+        success: false,
+        message: `Unknown error: ${err.message}`,
+      });
+    }
+
+    try {
+      // Extract form fields
+      const {
+        name,
+        email,
+        orderNumber,
+        productName,
+        overallSatisfaction,
+        qualityOfWork,
+        timeliness,
+        accuracy,
+        writtenReview,
+        workerName,
+        communicationSkills,
+        professionalism,
+        wouldRecommend,
+        followUpNeeded,
+        issueType,
+        issueDescription,
+        consentToPublish,
+        anonymous,
+      } = req.body;
+
+      // Process file uploads
+      const reviewImages = [];
+      const additionalImages = [];
+
+      // Extract file paths from the request
+      if (req.files) {
+        console.log('Files received:', Object.keys(req.files));
+        
+        // Process review images
+        if (req.files.reviewImages) {
+          req.files.reviewImages.forEach((file) => {
+            reviewImages.push({
+              filename: file.filename,
+              path: file.path,
+              mimetype: file.mimetype,
+            });
+          });
+        }
+        
+        // Process additional images
+        if (req.files.additionalImages) {
+          req.files.additionalImages.forEach((file) => {
+            additionalImages.push({
+              filename: file.filename,
+              path: file.path,
+              mimetype: file.mimetype,
+            });
+          });
+        }
+      }
+
+      // Construct review data object
+      const reviewData = {
+        // Customer Information
+        name: anonymous === "true" || anonymous === true ? "Anonymous" : name,
+        email,
+        isAnonymous: anonymous === "true" || anonymous === true,
+        
+        // Order Details
+        orderNumber,
+        productName,
+        
+        // Ratings
+        overallSatisfaction: parseInt(overallSatisfaction),
+        qualityOfWork: parseInt(qualityOfWork),
+        timeliness: parseInt(timeliness),
+        accuracy: parseInt(accuracy),
+        
+        // Review Content
+        writtenReview,
+        reviewImages,
+        
+        // Worker Details
+        workerName,
+        communicationSkills: parseInt(communicationSkills),
+        professionalism: parseInt(professionalism),
+        
+        // Additional Info
+        wouldRecommend: wouldRecommend === "yes",
+        followUpNeeded: followUpNeeded === "true" || followUpNeeded === true,
+        
+        // Issue Details
+        hasIssue: issueType !== "",
+        issueType,
+        issueDescription,
+        additionalImages,
+        
+        // Consent
+        consentToPublish: consentToPublish === "true" || consentToPublish === true,
+        
+        // Metadata
+        createdAt: new Date(),
+        status: "pending", // pending, approved, rejected
+      };
+
+      console.log("Review data to be saved:", reviewData);
+
+      // Save the review data to MySQL database
+      const connection = await pool.getConnection();
+      try {
+        await connection.beginTransaction();
+        
+        // Insert review
+        const [result] = await connection.execute(
+          `INSERT INTO reviews (
+            name, email, is_anonymous, order_number, product_name,
+            overall_satisfaction, quality_of_work, timeliness, accuracy,
+            written_review, worker_name, communication_skills, professionalism,
+            would_recommend, follow_up_needed, has_issue, issue_type, 
+            issue_description, consent_to_publish, status, created_at
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          [
+            reviewData.name,
+            reviewData.email,
+            reviewData.isAnonymous ? 1 : 0,
+            reviewData.orderNumber,
+            reviewData.productName,
+            reviewData.overallSatisfaction,
+            reviewData.qualityOfWork,
+            reviewData.timeliness,
+            reviewData.accuracy,
+            reviewData.writtenReview,
+            reviewData.workerName,
+            reviewData.communicationSkills,
+            reviewData.professionalism,
+            reviewData.wouldRecommend ? 1 : 0,
+            reviewData.followUpNeeded ? 1 : 0,
+            reviewData.hasIssue ? 1 : 0,
+            reviewData.issueType,
+            reviewData.issueDescription,
+            reviewData.consentToPublish ? 1 : 0,
+            reviewData.status,
+            reviewData.createdAt
+          ]
+        );
+        
+        const reviewId = result.insertId;
+        
+        // Save image paths to database
+        for (const image of reviewData.reviewImages) {
+          await connection.execute(
+            `INSERT INTO review_images (review_id, filename, file_path, mime_type, image_type)
+             VALUES (?, ?, ?, ?, 'review')`,
+            [
+              reviewId,
+              image.filename,
+              image.path,
+              image.mimetype
+            ]
+          );
+        }
+        
+        for (const image of reviewData.additionalImages) {
+          await connection.execute(
+            `INSERT INTO review_images (review_id, filename, file_path, mime_type, image_type)
+             VALUES (?, ?, ?, ?, 'issue')`,
+            [
+              reviewId,
+              image.filename,
+              image.path,
+              image.mimetype
+            ]
+          );
+        }
+        
+        await connection.commit();
+        
+        // Return success response
+        return res.status(201).json({
+          success: true,
+          message: "Review submitted successfully",
+          reviewId: reviewId
+        });
+      } catch (error) {
+        await connection.rollback();
+        throw error;
+      } finally {
+        connection.release();
+      }
+    } catch (error) {
+      console.error("Error saving review:", error);
+      return res.status(500).json({
+        success: false,
+        message: `Server error: ${error.message}`,
+      });
+    }
+  });
+});
+
+// GET /api/reviews - Get all reviews
+router.get("/", async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    try {
+      const [reviews] = await connection.query(`
+        SELECT * FROM reviews ORDER BY created_at DESC
+      `);
+      
+      return res.status(200).json({
+        success: true,
+        message: "Reviews fetched successfully",
+        reviews
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    return res.status(500).json({
+      success: false,
+      message: `Server error: ${error.message}`,
+    });
+  }
+});
+
+// GET /api/reviews/published - Get reviews for public display (consent_to_publish=1 and is_anonymous=0)
+router.get("/published", async (req, res) => {
+  try {
+    const connection = await pool.getConnection();
+    try {
+      console.log("[GET /published] Fetching published reviews...");
+      
+      // First get all published reviews
+      const [reviews] = await connection.query(`
+        SELECT * FROM reviews 
+        WHERE consent_to_publish = 1 AND is_anonymous = 0
+        ORDER BY created_at DESC
+      `);
+      
+      console.log(`[GET /published] Found ${reviews.length} published reviews`);
+      
+      // If no reviews found, return empty array - don't return a 404 error
+      if (reviews.length === 0) {
+        console.log("[GET /published] No published reviews found");
+        return res.status(200).json({
+          success: true,
+          message: "No published reviews found",
+          reviews: []
+        });
+      }
+      
+      // Then fetch all images for these reviews - handle this separately with proper error handling
+      let reviewsWithImages = [...reviews]; // Create a copy of reviews
+      
+      try {
+        // Extract all review IDs
+        const reviewIds = reviews.map(review => review.id);
+        console.log(`[GET /published] Fetching images for reviews with IDs: ${reviewIds.join(', ')}`);
+        
+        // Check if review_images table exists
+        const [tableCheck] = await connection.query(`
+          SELECT COUNT(*) as count FROM information_schema.tables 
+          WHERE table_schema = ? AND table_name = 'review_images'
+        `, [process.env.MYSQL_DATABASE || 'local_connect_db']);
+        
+        if (tableCheck[0].count === 0) {
+          console.log("[GET /published] review_images table does not exist");
+          // Return reviews without images if table doesn't exist
+          return res.status(200).json({
+            success: true,
+            message: "Published reviews fetched successfully (no images table)",
+            reviews: reviewsWithImages
+          });
+        }
+        
+        // Safe way to build the query: If no reviews, we don't do an image query
+        if (reviewIds.length > 0) {
+          // Use a different approach for the IN clause to handle multiple IDs correctly
+          let query = 'SELECT * FROM review_images WHERE review_id IN (';
+          const placeholders = reviewIds.map(() => '?').join(',');
+          query += placeholders + ')';
+          
+          try {
+            const [allImages] = await connection.query(query, reviewIds);
+            console.log(`[GET /published] Found ${allImages.length} images for published reviews`);
+            
+            // Map images to their respective reviews
+            reviewsWithImages = reviews.map(review => {
+              const reviewImages = allImages.filter(img => img.review_id === review.id);
+              return {
+                ...review,
+                reviewImages: reviewImages || []
+              };
+            });
+          } catch (imageQueryError) {
+            console.error("[GET /published] Error fetching images:", imageQueryError);
+            // Still continue and return reviews without images
+            console.log("[GET /published] Continuing with reviews but without images");
+          }
+        }
+      } catch (imageError) {
+        console.error("[GET /published] Error in image processing:", imageError);
+        // Continue with reviews but without images in case of error
+      }
+      
+      return res.status(200).json({
+        success: true,
+        message: "Published reviews fetched successfully",
+        reviews: reviewsWithImages
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("[GET /published] Error fetching published reviews:", error);
+    return res.status(500).json({
+      success: false,
+      message: `Server error: ${error.message}`,
+    });
+  }
+});
+
+// GET /api/reviews/diagnosis - Special endpoint to diagnose database issues
+router.get("/diagnosis", async (req, res) => {
+  try {
+    console.log("[GET /diagnosis] Starting diagnosis of reviews API...");
+    const diagnosisResults = {
+      serverTime: new Date().toISOString(),
+      databaseConnection: false,
+      tables: {
+        reviews: { exists: false, count: 0, sample: null },
+        review_images: { exists: false, count: 0, sample: null }
+      },
+      publishedReviews: { count: 0, sample: null },
+      errors: []
+    };
+    
+    // Check database connection
+    const connection = await pool.getConnection();
+    diagnosisResults.databaseConnection = true;
+    
+    try {
+      // Check reviews table
+      try {
+        const [reviewTableCheck] = await connection.query(`
+          SELECT COUNT(*) as count FROM information_schema.tables 
+          WHERE table_schema = ? AND table_name = 'reviews'
+        `, [process.env.MYSQL_DATABASE || 'local_connect_db']);
+        
+        diagnosisResults.tables.reviews.exists = reviewTableCheck[0].count > 0;
+        
+        if (diagnosisResults.tables.reviews.exists) {
+          // Count total reviews
+          const [reviewsCount] = await connection.query('SELECT COUNT(*) as count FROM reviews');
+          diagnosisResults.tables.reviews.count = reviewsCount[0].count;
+          
+          // Get sample review
+          if (reviewsCount[0].count > 0) {
+            const [sampleReview] = await connection.query('SELECT * FROM reviews LIMIT 1');
+            diagnosisResults.tables.reviews.sample = sampleReview[0];
+            
+            // Check consent and anonymous flags
+            const [publishedReviewsCount] = await connection.query(
+              'SELECT COUNT(*) as count FROM reviews WHERE consent_to_publish = 1 AND is_anonymous = 0'
+            );
+            diagnosisResults.publishedReviews.count = publishedReviewsCount[0].count;
+            
+            if (publishedReviewsCount[0].count > 0) {
+              const [samplePublishedReview] = await connection.query(
+                'SELECT * FROM reviews WHERE consent_to_publish = 1 AND is_anonymous = 0 LIMIT 1'
+              );
+              diagnosisResults.publishedReviews.sample = samplePublishedReview[0];
+            }
+          }
+        }
+      } catch (reviewsTableError) {
+        diagnosisResults.errors.push({
+          source: 'reviews table check',
+          message: reviewsTableError.message,
+          code: reviewsTableError.code
+        });
+      }
+      
+      // Check review_images table
+      try {
+        const [imagesTableCheck] = await connection.query(`
+          SELECT COUNT(*) as count FROM information_schema.tables 
+          WHERE table_schema = ? AND table_name = 'review_images'
+        `, [process.env.MYSQL_DATABASE || 'local_connect_db']);
+        
+        diagnosisResults.tables.review_images.exists = imagesTableCheck[0].count > 0;
+        
+        if (diagnosisResults.tables.review_images.exists) {
+          // Count total images
+          const [imagesCount] = await connection.query('SELECT COUNT(*) as count FROM review_images');
+          diagnosisResults.tables.review_images.count = imagesCount[0].count;
+          
+          // Get sample image
+          if (imagesCount[0].count > 0) {
+            const [sampleImage] = await connection.query('SELECT * FROM review_images LIMIT 1');
+            diagnosisResults.tables.review_images.sample = sampleImage[0];
+          }
+        }
+      } catch (imagesTableError) {
+        diagnosisResults.errors.push({
+          source: 'review_images table check',
+          message: imagesTableError.message,
+          code: imagesTableError.code
+        });
+      }
+      
+      return res.status(200).json({
+        success: true,
+        message: "API diagnosis completed",
+        diagnosis: diagnosisResults
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error("[GET /diagnosis] Error during API diagnosis:", error);
+    return res.status(500).json({
+      success: false,
+      message: `Server error during diagnosis: ${error.message}`,
+      error: {
+        message: error.message,
+        code: error.code,
+        stack: error.stack
+      }
+    });
+  }
+});
+
+// GET /api/reviews/:id - Get a specific review with its images
+router.get("/:id", async (req, res, next) => {
+  try {
+    const reviewId = req.params.id;
+    
+    // Important: Special case for if the ID is actually 'published'
+    // This shouldn't happen now that we've moved the /published route before /:id
+    if (reviewId === 'published') {
+      console.log("[GET /:id] Received 'published' as ID, redirecting to published handler");
+      return next();
+    }
+    
+    // Check if ID is a valid integer
+    if (isNaN(parseInt(reviewId))) {
+      console.log(`[GET /:id] Invalid ID format: ${reviewId}`);
+      return res.status(404).json({
+        success: false,
+        message: "Review not found - Invalid ID format"
+      });
+    }
+    
+    const connection = await pool.getConnection();
+    
+    try {
+      // Get review details with better error logging
+      console.log(`[GET /:id] Fetching review with ID: ${reviewId}`);
+      
+      const [reviewRows] = await connection.query(
+        "SELECT * FROM reviews WHERE id = ?",
+        [reviewId]
+      );
+      
+      console.log(`[GET /:id] Found ${reviewRows.length} reviews with ID ${reviewId}`);
+      
+      if (reviewRows.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "Review not found"
+        });
+      }
+      
+      const review = reviewRows[0];
+      
+      // Try-catch block for image fetching to prevent query failures
+      let reviewImagesRows = [];
+      let additionalImagesRows = [];
+      
+      try {
+        // Get review images
+        [reviewImagesRows] = await connection.query(
+          "SELECT * FROM review_images WHERE review_id = ? AND image_type = 'review'",
+          [reviewId]
+        );
+        
+        // Get additional images (if any)
+        [additionalImagesRows] = await connection.query(
+          "SELECT * FROM review_images WHERE review_id = ? AND image_type = 'issue'",
+          [reviewId]
+        );
+      } catch (imageError) {
+        console.error(`[GET /:id] Error fetching images for review ${reviewId}:`, imageError);
+        // Continue without images if there's an error
+      }
+      
+      // Combine all data
+      const reviewData = {
+        ...review,
+        reviewImages: reviewImagesRows || [],
+        additionalImages: additionalImagesRows || []
+      };
+      
+      return res.status(200).json({
+        success: true,
+        message: "Review fetched successfully",
+        review: reviewData
+      });
+    } finally {
+      connection.release();
+    }
+  } catch (error) {
+    console.error(`[GET /:id] Error fetching review:`, error);
+    return res.status(500).json({
+      success: false,
+      message: `Server error: ${error.message}`
+    });
+  }
+});
+
+module.exports = router; 

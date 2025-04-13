@@ -29,6 +29,8 @@ import ConcertTicketList from "./components/ConcertTicketList";
 import SportsTicketList from "./components/SportsTicketList";
 import TheaterTicketList from "./components/TheaterTicketList";
 import FestivalsTicketList from "./components/FestivalsTicketList";
+import ReviewForm from "./components/ReviewForm"; // Import ReviewForm component
+import WorkerReviews from "./components/WorkerReviews"; // Import WorkerReviews component
 
 function App() {
   const location = useLocation();
@@ -153,6 +155,21 @@ function App() {
 
 <Route path="/cart" element={<Cart />} /> {/* New Cart route */}
 <Route path="/payment-success" element={<PaymentSuccess />} /> {/* Payment success route */}
+        {/*<Route path="/cart" element={<Cart />} />  New Cart route  */}
+        
+        {/* Reviews routes */}
+        <Route
+          path="/reviews"
+          element={<WorkerReviews />}
+        />
+        <Route
+          path="/add-review"
+          element={
+            <ProtectedRoute>
+              <ReviewForm />
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
       <Footer />

@@ -1,5 +1,6 @@
 .select-container {
     background-color: #0f1115;
+    background-image: linear-gradient(135deg, #0f1115 0%, #1a1e25 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -8,43 +9,191 @@
     color: #ffffff;
     font-family: "Roboto", sans-serif;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .select-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(74, 107, 255, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
+    z-index: 1;
+  }
+  
+  .select-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    width: 100%;
+    padding: 2rem;
   }
   
   .select-heading {
     font-size: 2.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
     text-transform: uppercase;
     letter-spacing: 2px;
+    background: linear-gradient(to right, #ffffff, #a8b8ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    font-weight: 700;
   }
   
   .select-buttons {
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
   }
   
   .select-btn {
-    background-color: #3b82f6;
-    color: #ffffff;
-    text-transform: uppercase;
+    background-color: rgba(255, 255, 255, 0.05);
     border: none;
-    border-radius: 6px;
-    padding: 1rem 2rem;
-    font-size: 1.2rem;
-    font-weight: 600;
+    border-radius: 12px;
+    padding: 0;
     cursor: pointer;
-    transition: 0.3s;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    height: 80px;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
+  
+  .select-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.05) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease-in-out;
+    z-index: 1;
   }
   
   .select-btn:hover {
-    background-color: #2563eb;
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .select-btn:hover::before {
+    transform: translateX(100%);
+  }
+  
+  .btn-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 1.5rem;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .btn-icon {
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    margin-right: 1.5rem;
+    color: #fff;
+  }
+  
+  .btn-text {
+    flex-grow: 1;
+    text-align: left;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  .arrow-icon {
+    font-size: 1.2rem;
+    opacity: 0.7;
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .select-btn:hover .arrow-icon {
+    transform: translateX(5px);
   }
   
   .workers-btn {
-    background-color: #ffcc00;
+    background: linear-gradient(90deg, rgba(255, 204, 0, 0.1) 0%, rgba(255, 204, 0, 0.05) 100%);
+    border: 1px solid rgba(255, 204, 0, 0.2);
+  }
+  
+  .workers-btn .btn-icon {
+    background: linear-gradient(135deg, #ffcc00 0%, #e6b800 100%);
     color: #000;
   }
   
   .workers-btn:hover {
-    background-color: #e6b800;
+    border: 1px solid rgba(255, 204, 0, 0.4);
+  }
+  
+  .customers-btn {
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  .customers-btn .btn-icon {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  }
+  
+  .customers-btn:hover {
+    border: 1px solid rgba(59, 130, 246, 0.4);
+  }
+  
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+    .select-buttons {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    
+    .select-btn {
+      height: 90px;
+    }
+    
+    .btn-icon {
+      font-size: 2rem;
+      min-width: 60px;
+      height: 60px;
+    }
+    
+    .btn-text {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .select-heading {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .btn-icon {
+      min-width: 40px;
+      height: 40px;
+      margin-right: 1rem;
+    }
+    
+    .btn-text {
+      font-size: 1.1rem;
+    }
   }
   

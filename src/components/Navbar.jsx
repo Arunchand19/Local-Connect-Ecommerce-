@@ -1,6 +1,6 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect, useContext } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { CartContext } from './CartContext';
 import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
@@ -11,7 +11,6 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,28 +34,6 @@ const Navbar = () => {
     navigate('/');
   };
 
-  // Function to scroll to workers section
-  const scrollToWorkers = (e) => {
-    e.preventDefault(); // Prevent default link behavior
-    const workersSection = document.getElementById('workers-availability');
-    
-    if (location.pathname !== '/') {
-      // If not on home page, navigate to home first
-      navigate('/');
-      // Wait for navigation to complete then scroll
-      setTimeout(() => {
-        const section = document.getElementById('workers-availability');
-        if (section) {
-          section.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else if (workersSection) {
-      // Already on home page, just scroll
-      workersSection.scrollIntoView({ behavior: 'smooth' });
-      closeMenu();
-    }
-  };
-
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
@@ -75,13 +52,13 @@ const Navbar = () => {
             Home
           </NavLink>
 
-          <a
-            href="#workers-availability"
-            className="nav-item"
-            onClick={scrollToWorkers}
+          <NavLink
+            to="/workers"
+            className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
+            onClick={closeMenu}
           >
             Workers
-          </a>
+          </NavLink>
 
           <NavLink
             to="/tickets"
@@ -90,6 +67,21 @@ const Navbar = () => {
           >
             Events
           </NavLink>
+
+          {/* Reviews button - visible to all users */}
+          <div className="nav-dropdown">
+            <NavLink
+              to="/reviews"
+              className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
+              onClick={closeMenu}
+            >
+              Reviews
+            </NavLink>
+            <div className="dropdown-content">
+              <NavLink to="/reviews" onClick={closeMenu}>View Reviews</NavLink>
+              <NavLink to="/add-review" onClick={closeMenu}>Write a Review</NavLink>
+            </div>
+          </div>
 
           {/* New Cart Link with Icon */}
           <NavLink

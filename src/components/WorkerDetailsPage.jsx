@@ -23,6 +23,19 @@ const WorkerDetailsPage = () => {
     packers: 'packersMovers'
   };
 
+  // Convert category ID to a more readable format
+  const getCategoryName = (catId) => {
+    switch(catId) {
+      case 'ac': return 'AC Repair';
+      case 'mechanic': return 'Mechanic';
+      case 'electrical': return 'Electrical';
+      case 'electronics': return 'Electronics';
+      case 'plumber': return 'Plumber';
+      case 'packers': return 'Packers & Movers';
+      default: return catId.toUpperCase();
+    }
+  };
+
   useEffect(() => {
     const fetchWorkers = async () => {
       setLoading(true);
@@ -84,25 +97,28 @@ const WorkerDetailsPage = () => {
   };
 
   return (
-    <div className="section-container enhanced-section-container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Workers - {categoryId.toUpperCase()}</h2>
+    <div className="worker-page-container">
+      <div className="workers-header">
+        <h2>Workers - {getCategoryName(categoryId)}</h2>
         <button onClick={handleLogout} className="logout-btn">Logout</button>
       </div>
       
       {loading ? (
-        <p>Loading workers...</p>
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Loading workers...</p>
+        </div>
       ) : error ? (
-        <div>
+        <div className="error-container">
           <p className="error-message">{error}</p>
-          {debugInfo && <p className="debug-info" style={{fontSize: '0.8rem', color: '#888'}}>{debugInfo}</p>}
-          <button onClick={fetchAllWorkers} style={{marginTop: '10px', padding: '5px 10px'}}>Debug: Check All Workers</button>
+          {debugInfo && <p className="debug-info">{debugInfo}</p>}
+          <button onClick={fetchAllWorkers} className="debug-button">Debug: Check All Workers</button>
         </div>
       ) : workers.length === 0 ? (
-        <div>
+        <div className="no-workers-container">
           <p>No workers available in this category.</p>
-          {debugInfo && <p className="debug-info" style={{fontSize: '0.8rem', color: '#888'}}>{debugInfo}</p>}
-          <button onClick={fetchAllWorkers} style={{marginTop: '10px', padding: '5px 10px'}}>Debug: Check All Workers</button>
+          {debugInfo && <p className="debug-info">{debugInfo}</p>}
+          <button onClick={fetchAllWorkers} className="debug-button">Debug: Check All Workers</button>
         </div>
       ) : (
         <WorkerDetails workers={workers} />
