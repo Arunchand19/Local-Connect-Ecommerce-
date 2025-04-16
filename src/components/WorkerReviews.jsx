@@ -33,7 +33,7 @@ const WorkerReviews = () => {
       console.log("Fetching reviews from server - " + new Date().toLocaleTimeString());
       
       // Use the general endpoint to get all reviews to ensure we're fetching data
-      const response = await axios.get('http://localhost:5001/api/reviews', { 
+      const response = await axios.get('http://localhost:5003/api/reviews', { 
         timeout: 10000,
         headers: {
           'Cache-Control': 'no-cache',
@@ -111,7 +111,7 @@ const WorkerReviews = () => {
         
         // Try to diagnose the issue
         try {
-          const diagnosisResponse = await axios.get('http://localhost:5001/api/reviews/diagnosis');
+          const diagnosisResponse = await axios.get('http://localhost:5003/api/reviews/diagnosis');
           console.log("Diagnosis response:", diagnosisResponse.data);
           setDebugInfo(prev => ({
             ...prev,
@@ -169,7 +169,7 @@ const WorkerReviews = () => {
       // Try to connect to server directly to see if it's running
       try {
         console.log("Attempting to verify server status...");
-        await axios.get('http://localhost:5001/api/reviews/diagnosis');
+        await axios.get('http://localhost:5003/api/reviews/diagnosis');
         errorMessage += " Server is running but there was an error with the reviews request.";
       } catch (serverErr) {
         if (!serverErr.response) {
@@ -273,10 +273,10 @@ const WorkerReviews = () => {
         <div className="server-status-alert">
           <p>
             <strong>Server Connection:</strong> There might be an issue connecting to the server. 
-            Please make sure the backend server is running on port 5001.
+            Please make sure the backend server is running on port 5003.
             <button 
               className="check-server-button" 
-              onClick={() => window.open('http://localhost:5001/health', '_blank')}
+              onClick={() => window.open('http://localhost:5003/health', '_blank')}
             >
               Check Server
             </button>
@@ -415,7 +415,7 @@ const WorkerReviews = () => {
                           {review.reviewImages.map((image, index) => (
                             <img 
                               key={index} 
-                              src={`http://localhost:5001/${image.file_path ? image.file_path.replace(/\\/g, '/') : image.path?.replace(/\\/g, '/')}`} 
+                              src={`http://localhost:5003/${image.file_path ? image.file_path.replace(/\\/g, '/') : image.path?.replace(/\\/g, '/')}`} 
                               alt={`Review ${index + 1}`}
                               onError={(e) => {
                                 console.error(`Error loading image: ${image.file_path || image.path}`);

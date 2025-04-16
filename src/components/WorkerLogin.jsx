@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../AuthContext";
 import "./WorkerLogin.css";
-//import "./LiveBackground.css";
+import backgroundVideo from '../assets/background.mp4';
 
 const WorkerLogin = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -22,7 +22,7 @@ const WorkerLogin = () => {
   });
 
   const [loginData, setLoginData] = useState({
-    username: "",
+    identifier: "",
     password: "",
   });
 
@@ -155,7 +155,7 @@ const WorkerLogin = () => {
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5001/api/worker-auth/signup", signupData);
+      await axios.post("http://localhost:5003/api/worker-auth/signup", signupData);
       alert("Sign up successful! Please complete your worker details.");
       navigate("/worker-form");
     } catch (error) {
@@ -166,7 +166,7 @@ const WorkerLogin = () => {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5001/api/worker-auth/login", loginData);
+      const response = await axios.post("http://localhost:5003/api/worker-auth/login", loginData);
       const { token, user } = response.data;
       login(token, user);
       navigate(from, { replace: true });
@@ -182,87 +182,54 @@ const WorkerLogin = () => {
   }, [isAuthenticated, navigate, from]);
 
   return (
-    <div className="login-container worker-login" ref={containerRef}>
-      <div className="live-background">
-        <div className="depth-layer depth-layer--1">
-          <div className="light-stream light-stream--blue"></div>
+    <div className="login-container">
+      <video autoPlay muted loop className="background-video">
+        <source src={backgroundVideo} type="video/mp4" />
+      </video>
+      <div className="content-overlay">
+        <h1 className="login-heading">WELCOME TO WORKER PORTAL</h1>
+        <div className="switch-container">
+          <span className={`switch-label ${activeTab === "login" ? "active" : ""}`}>
+            LOG IN
+          </span>
+          <label className="switch">
+            <input type="checkbox" checked={activeTab === "signup"} onChange={handleToggle} />
+            <span className="slider round"></span>
+          </label>
+          <span className={`switch-label ${activeTab === "signup" ? "active" : ""}`}>
+            SIGN UP
+          </span>
         </div>
-        <div className="depth-layer depth-layer--2">
-          <div className="light-stream light-stream--pink"></div>
-        </div>
-        <div className="depth-layer depth-layer--3">
-          <div className="light-stream light-stream--green"></div>
-        </div>
-        <div className="light-path light-path--1"></div>
-        <div className="light-path light-path--2"></div>
-      </div>
-
-      <div className="particles-container">
-        <div className="particle-field"></div>
-      </div>
-
-      <h1 className="login-heading">WELCOME TO WORKER PORTAL</h1>
-
-      <div className="switch-container">
-        <span className={`switch-label ${activeTab === "login" ? "active" : ""}`}>
-          LOG IN
-        </span>
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={activeTab === "signup"}
-            onChange={handleToggle}
-          />
-          <span className="slider round"></span>
-        </label>
-        <span className={`switch-label ${activeTab === "signup" ? "active" : ""}`}>
-          SIGN UP
-        </span>
-      </div>
-
-      <div className="card login-card card-3d-effect" ref={cardRef}>
-        <div className="flip-container card-3d-container">
-          <div className={`flipper ${activeTab === "signup" ? "flipped" : ""}`}>
-            <div className="front">
-              <h2 className="card-title">Log In</h2>
-              <div className="card-body">
+        <div className="card login-card">
+          <div className="flip-container">
+            <div className={`flipper ${activeTab === "signup" ? "flipped" : ""}`}>
+              <div className="front">
+                <h2 className="card-title">Log In</h2>
                 <form onSubmit={handleLoginSubmit}>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      className="form-control input-field"
-                      name="username"
-                      placeholder="Username"
-                      value={loginData.username}
-                      onChange={handleLoginChange}
-                      required
-                    />
-                  </div>
-                  <div className="mb-3">
-                    <input
-                      type="password"
-                      className="form-control input-field"
-                      name="password"
-                      placeholder="Password"
-                      value={loginData.password}
-                      onChange={handleLoginChange}
-                      required
-                    />
-                  </div>
-                  <button type="submit" className="btn login-btn">
-                    LOG IN
-                  </button>
+                  <input
+                    type="text"
+                    name="identifier"
+                    placeholder="Username or Email"
+                    value={loginData.identifier}
+                    onChange={handleLoginChange}
+                    required
+                  />
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    value={loginData.password}
+                    onChange={handleLoginChange}
+                    required
+                  />
+                  <button type="submit">LOG IN</button>
                 </form>
               </div>
-            </div>
-
-            <div className="back">
-              <h2 className="card-title">Sign Up</h2>
-              <div className="card-body">
+              <div className="back">
+                <h2 className="card-title">Sign Up</h2>
                 <form onSubmit={handleSignupSubmit}>
                   <input
                     type="text"
-                    className="form-control input-field"
                     name="username"
                     placeholder="User Name"
                     value={signupData.username}
@@ -271,7 +238,6 @@ const WorkerLogin = () => {
                   />
                   <input
                     type="text"
-                    className="form-control input-field"
                     name="phone"
                     placeholder="Phone Number"
                     value={signupData.phone}
@@ -280,7 +246,6 @@ const WorkerLogin = () => {
                   />
                   <input
                     type="email"
-                    className="form-control input-field"
                     name="email"
                     placeholder="Email"
                     value={signupData.email}
@@ -289,16 +254,13 @@ const WorkerLogin = () => {
                   />
                   <input
                     type="password"
-                    className="form-control input-field"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Set Password"
                     value={signupData.password}
                     onChange={handleSignupChange}
                     required
                   />
-                  <button type="submit" className="btn login-btn">
-                    SIGN UP
-                  </button>
+                  <button type="submit">Sign Up</button>
                 </form>
               </div>
             </div>

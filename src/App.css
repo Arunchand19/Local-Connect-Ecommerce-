@@ -92,11 +92,10 @@ button {
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem 1rem;
-  margin-left: 50px;
 }
 
 .navbar-logo {
-  margin-left: 20px;
+  margin: 0;
 }
 
 .navbar-logo a {
@@ -111,10 +110,12 @@ button {
   transform: scale(1.05);
 }
 
+/* Make sure this pushes the menu to the right. */
 .navbar-menu {
   display: flex;
   align-items: center;
-  margin-right: -180px;
+  /* Existing code: margin: 0; */
+  margin-left: 6 rem; /* <-- ADJUST THIS VALUE TO SHIFT MENU RIGHT */
 }
 
 .navbar-menu .nav-item {
@@ -126,6 +127,13 @@ button {
   padding: 0.5rem 0.75rem;
   position: relative;
   transition: color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navbar-menu .no-underline::after {
+  display: none;
 }
 
 .navbar-menu .nav-item::after {
@@ -140,7 +148,7 @@ button {
 }
 
 .navbar-menu .nav-item:hover {
-  color: #ffffff;
+  color: #12dc52;
 }
 
 .navbar-menu .nav-item:hover::after {
@@ -195,17 +203,18 @@ button {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-in-out;
+    margin-right: 0; /* override the shift on mobile if desired */
   }
-  
+
   .navbar-menu.active {
     max-height: 300px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
   }
-  
+
   .navbar-menu .nav-item {
     margin: 1rem;
   }
-  
+
   .navbar-toggle {
     display: flex;
   }
@@ -607,8 +616,6 @@ button {
 /* ------------------------- */
 /* Worker & Ticket Grid Cards */
 /* ------------------------- */
-/* The grid is now set to display exactly three cards per row.
-   On smaller screens the grid adjusts to two or one column. */
 .worker-grid,
 .ticket-grid {
   display: grid;
@@ -740,12 +747,13 @@ button {
   padding: 2px 6px;
   border-radius: 50%;
   margin-left: 4px;
-  margin-top: 20px;
   font-size: 0.8rem;
-  vertical-align: super;
+  vertical-align: middle;
 }
 
+/* ------------------------- */
 /* Dropdown Styles for Navbar */
+/* ------------------------- */
 .nav-dropdown {
   position: relative;
   display: inline-block;

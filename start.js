@@ -7,30 +7,66 @@ console.log('🚀 Starting the Local Connect application...');
 let serverStarted = false;
 let clientStarted = false;
 
-// Start the server
+// Start the Stripe server
 console.log('📡 Starting Stripe server...');
-const server = exec('npm run server');
+const stripeServer = exec('npm run server');
 
-// Forward server output to console
-server.stdout.on('data', (data) => {
+// Start the API server
+console.log('🌐 Starting API server...');
+const apiServer = exec('npm run api-server');
+
+let stripeServerStarted = false;
+let apiServerStarted = false;
+
+// Forward Stripe server output to console
+stripeServer.stdout.on('data', (data) => {
   const output = data.trim();
-  console.log(`[SERVER]: ${output}`);
+  console.log(`[STRIPE SERVER]: ${output}`);
   
-  // Check if server has started successfully
-  if (output.includes('Stripe server running on port') && !serverStarted) {
-    serverStarted = true;
-    startClient();
+  // Check if Stripe server has started successfully
+  if (output.includes('Stripe server running on port') && !stripeServerStarted) {
+    stripeServerStarted = true;
+    checkAllServersStarted();
   }
 });
 
-server.stderr.on('data', (data) => {
-  console.error(`[SERVER ERROR]: ${data.trim()}`);
+stripeServer.stderr.on('data', (data) => {
+  console.error(`[STRIPE SERVER ERROR]: ${data.trim()}`);
 });
 
-server.on('error', (err) => {
-  console.error('Failed to start server process:', err);
+stripeServer.on('error', (err) => {
+  console.error('Failed to start Stripe server process:', err);
   process.exit(1);
 });
+
+// Forward API server output to console
+apiServer.stdout.on('data', (data) => {
+  const output = data.trim();
+  console.log(`[API SERVER]: ${output}`);
+  
+  // Check if API server has started successfully
+  if (output.includes('Server running on port') && !apiServerStarted) {
+    apiServerStarted = true;
+    checkAllServersStarted();
+  }
+});
+
+apiServer.stderr.on('data', (data) => {
+  console.error(`[API SERVER ERROR]: ${data.trim()}`);
+});
+
+apiServer.on('error', (err) => {
+  console.error('Failed to start API server process:', err);
+  process.exit(1);
+});
+
+// Function to check if all servers have started
+function checkAllServersStarted() {
+  if (stripeServerStarted && apiServerStarted && !serverStarted) {
+    serverStarted = true;
+    startClient();
+  }
+}
 
 function startClient() {
   // Start the client
@@ -56,7 +92,8 @@ function startClient() {
 
   client.on('error', (err) => {
     console.error('Failed to start client process:', err);
-    server.kill();
+    stripeServer.kill();
+    apiServer.kill();
     process.exit(1);
   });
 
@@ -69,18 +106,20 @@ function startClient() {
   // Handle cleanup on exit
   process.on('SIGINT', () => {
     console.log('\n👋 Gracefully shutting down...');
-    server.kill();
+    stripeServer.kill();
+    apiServer.kill();
     client.kill();
     rl.close();
     process.exit(0);
   });
 }
 
-// Set a timeout to prevent hanging if server doesn't start properly
+// Set a timeout to prevent hanging if servers don't start properly
 setTimeout(() => {
   if (!serverStarted) {
     console.error('Server startup timed out after 10 seconds. Check server logs for errors.');
-    server.kill();
+    stripeServer.kill();
+    apiServer.kill();
     process.exit(1);
   }
 }, 10000); 

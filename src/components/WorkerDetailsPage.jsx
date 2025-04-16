@@ -55,10 +55,10 @@ const WorkerDetailsPage = () => {
         }
 
         // Set debug info about what we're trying to fetch
-        setDebugInfo(`Fetching workers with ${workerType}=true from http://localhost:5001/api/worker-form/by-type/${workerType}`);
+        setDebugInfo(`Fetching workers with ${workerType}=true from http://localhost:5003/api/worker-form/by-type/${workerType}`);
         
         // Fetch workers based on their services/worker types
-        const response = await axios.get(`http://localhost:5001/api/worker-form/by-type/${workerType}`);
+        const response = await axios.get(`http://localhost:5003/api/worker-form/by-type/${workerType}`);
         
         console.log('API Response:', response.data);
         
@@ -89,7 +89,7 @@ const WorkerDetailsPage = () => {
   const fetchAllWorkers = async () => {
     try {
       setDebugInfo("Fetching all workers...");
-      const response = await axios.get('http://localhost:5001/api/worker-form/all');
+      const response = await axios.get('http://localhost:5003/api/worker-form/all');
       setDebugInfo(`Found ${response.data.length} total workers in database`);
     } catch (err) {
       setDebugInfo(`Error fetching all workers: ${err.message}`);
@@ -100,7 +100,7 @@ const WorkerDetailsPage = () => {
     <div className="worker-page-container">
       <div className="workers-header">
         <h2>Workers - {getCategoryName(categoryId)}</h2>
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
+       {/* <button onClick={handleLogout} className="logout-btn">Logout</button> */}
       </div>
       
       {loading ? (

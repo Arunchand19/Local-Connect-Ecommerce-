@@ -39,21 +39,54 @@ router.post("/signup", async (req, res) => {
 // Login
 router.post("/login", async (req, res) => {
   try {
-    const { username, password } = req.body;
-    // Find worker by username
-    const worker = await Worker.findOne({ username });
+    const { identifier, password } = req.body;
+    console.log("Login attempt with identifier:", identifier);
+    
+    if (!identifier) {
+      return res.status(400).json({ error: "Username or email is required" });
+    }
+
+    // Find worker by username or email
+    const worker = await Worker.findOne({
+      $or: [
+        { username: identifier },
+        { email: identifier }
+      ]
+    });
+
     if (!worker) {
+      console.log("Worker not found with identifier:", identifier);
       return res.status(401).json({ error: "Invalid credentials" });
     }
-    // Compare password
-    const isMatch = await bcrypt.compare(password, worker.password);
+
+    console.log("Worker found:", worker.username);
+
+    // Compare password - try direct comparison first for imported data
+    let isMatch = false;
+
+    // Try direct comparison first (in case of imported data without hashing)
+    if (password === worker.password) {
+      console.log("Direct password match");
+      isMatch = true;
+    } else {
+      // Try bcrypt comparison for hashed passwords
+      try {
+        isMatch = await bcrypt.compare(password, worker.password);
+        console.log("Bcrypt comparison result:", isMatch);
+      } catch (err) {
+        console.error("Bcrypt comparison failed:", err);
+      }
+    }
+
     if (!isMatch) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
     // Generate JWT
     const token = jwt.sign({ workerId: worker._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
+
     return res.status(200).json({
       message: "Login successful",
       token,
@@ -65,7 +98,7 @@ router.post("/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Worker login error:", error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "An error occurred during login. Please try again." });
   }
 });
 

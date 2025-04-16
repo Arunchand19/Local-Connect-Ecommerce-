@@ -21,7 +21,9 @@ const createDbConnection = mysql.createPool({
   password: process.env.MYSQL_PASSWORD || '',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 60000, // 60 seconds timeout
+  debug: process.env.NODE_ENV === 'development'
 });
 
 // Create a MySQL connection pool (to be used after database is ensured)
@@ -32,7 +34,9 @@ const pool = mysql.createPool({
   database: process.env.MYSQL_DATABASE || 'local_connect_db',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  connectTimeout: 60000, // 60 seconds timeout
+  debug: process.env.NODE_ENV === 'development'
 });
 
 // Ensure upload directories exist
@@ -85,8 +89,11 @@ const uploadFields = upload.fields([
 // Ensure the MySQL database and tables exist
 const initializeDatabase = async () => {
   try {
+    console.log(`Connecting to MySQL at ${process.env.MYSQL_HOST} with user ${process.env.MYSQL_USER}...`);
     // First create database if it doesn't exist
     const connection = await createDbConnection.getConnection();
+    console.log('Successfully connected to MySQL server');
+    
     const dbName = process.env.MYSQL_DATABASE || 'local_connect_db';
     
     // Create database if it doesn't exist
@@ -97,6 +104,7 @@ const initializeDatabase = async () => {
     
     // Now create tables in the database
     const dbConnection = await pool.getConnection();
+    console.log(`Successfully connected to database ${dbName}`);
     
     // Create the reviews table if it doesn't exist
     await dbConnection.query(`
@@ -143,6 +151,19 @@ const initializeDatabase = async () => {
     console.log("MySQL database tables initialized successfully");
   } catch (error) {
     console.error("Error initializing MySQL database tables:", error);
+    console.error("MySQL connection details:", {
+      host: process.env.MYSQL_HOST,
+      user: process.env.MYSQL_USER,
+      database: process.env.MYSQL_DATABASE
+    });
+    
+    if (error.code === 'ECONNREFUSED') {
+      console.error("Connection refused. Please make sure MySQL server is running and accessible.");
+    } else if (error.code === 'ER_ACCESS_DENIED_ERROR') {
+      console.error("Access denied. Please check your MySQL username and password.");
+    } else if (error.code === 'ETIMEDOUT') {
+      console.error("Connection timed out. Please check your network settings and firewall rules.");
+    }
   }
 };
 

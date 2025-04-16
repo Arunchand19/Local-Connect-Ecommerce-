@@ -1,444 +1,295 @@
-/* WorkerLogin.css */
+/* Main container */
 .login-container {
-  background-color: #0f1115;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   color: #ffffff;
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   padding: 2rem 1rem;
   margin: 0;
   position: relative;
   overflow: hidden;
-  background: #0a0a0f;
-  perspective: 1200px;
-  transform-style: preserve-3d;
 }
 
-/* Worker-specific styling with enhanced 3D effects */
-.worker-login .login-heading {
-  color: #ffffff;
+/* Video Background */
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Content Overlay */
+.content-overlay {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  padding: 2rem;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Large heading at the top */
+.login-heading {
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   text-align: center;
-  position: relative;
-  z-index: 10;
-  text-shadow: 0 0 10px rgba(255, 0, 150, 0.5),
-               0 0 20px rgba(255, 0, 150, 0.3),
-               0 0 30px rgba(255, 0, 150, 0.1);
-  animation: worker-text-glow 3s ease-in-out infinite alternate;
-  transform: translateZ(30px);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 0, 150, 1) 0%,
-    rgba(255, 100, 0, 1) 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.3));
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
 }
 
-.worker-login .login-heading:hover {
-  transform: translateZ(40px) scale(1.05);
-}
-
-@keyframes worker-text-glow {
-  0% {
-    filter: drop-shadow(0 0 15px rgba(255, 0, 150, 0.5));
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }
-  100% {
-    filter: drop-shadow(0 0 15px rgba(255, 100, 0, 0.5));
+  to {
+    text-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700, 0 0 40px #ffd700;
   }
 }
 
-.worker-login .switch-container {
+/* Toggle switch container */
+.switch-container {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 2rem;
-  position: relative;
-  z-index: 10;
-  transform: translateZ(25px);
-  backdrop-filter: blur(5px);
-  padding: 0.5rem 1rem;
-  border-radius: 30px;
-  background: rgba(15, 17, 21, 0.4);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.worker-login .switch-container:hover {
-  transform: translateZ(30px) scale(1.03);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
-}
-
-.worker-login .switch-label {
+.switch-label {
   font-size: 1rem;
-  margin: 0 0.8rem;
-  color: rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
+  margin: 0 0.5rem;
+  color: #999;
+  transition: color 0.3s ease;
   text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 1px;
 }
 
-.worker-login .switch-label.active {
-  color: #ff3e9d;
-  text-shadow: 0 0 8px rgba(255, 62, 157, 0.5);
-  transform: scale(1.1);
+.switch-label.active {
+  color: #ffd700;
 }
 
-.worker-login .switch {
+.switch {
   position: relative;
   display: inline-block;
   width: 50px;
   height: 25px;
   margin: 0 0.5rem;
-  transform-style: preserve-3d;
 }
 
-.worker-login .slider {
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
   position: absolute;
   cursor: pointer;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to right, rgba(255, 0, 150, 0.3), rgba(255, 100, 0, 0.3));
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: 0.4s;
   border-radius: 25px;
-  box-shadow: 
-    inset 0 1px 3px rgba(0, 0, 0, 0.3),
-    0 0 8px rgba(255, 0, 150, 0.3);
-  overflow: hidden;
 }
 
-.worker-login input:checked + .slider {
-  background: linear-gradient(to right, rgba(255, 100, 0, 0.3), rgba(255, 0, 150, 0.3));
-  box-shadow: 
-    inset 0 1px 3px rgba(0, 0, 0, 0.3),
-    0 0 8px rgba(255, 100, 0, 0.3);
-}
-
-.worker-login input:focus + .slider {
-  box-shadow: 
-    inset 0 1px 3px rgba(0, 0, 0, 0.3),
-    0 0 10px rgba(255, 0, 150, 0.5);
-}
-
-.worker-login .slider:before {
+.slider:before {
   position: absolute;
   content: "";
-  height: 19px;
-  width: 19px;
-  left: 3px;
-  bottom: 3px;
+  height: 17px;
+  width: 17px;
+  left: 4px;
+  bottom: 4px;
   background: #ffffff;
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: 0.4s;
   border-radius: 50%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 2;
 }
 
-.worker-login .slider:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.2), 
-    transparent);
-  transform: translateX(-100%);
-  animation: slider-shine 5s infinite;
+input:checked + .slider {
+  background-color: #ffd700;
 }
 
-@keyframes slider-shine {
-  100% {
-    transform: translateX(100%);
-  }
+input:focus + .slider {
+  box-shadow: 0 0 2px #ffd700;
 }
 
-.worker-login input:checked + .slider:before {
-  transform: translateX(25px);
+input:checked + .slider:before {
+  transform: translateX(24px);
 }
 
-.worker-login .login-card {
-  background-color: rgba(15, 17, 21, 0.75);
-  backdrop-filter: blur(15px);
+/* Card styling */
+.login-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
   border-radius: 12px;
-  width: 500px;
-  height: 550px;
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.5),
-    0 0 20px rgba(255, 0, 150, 0.2),
-    0 0 40px rgba(255, 100, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  min-height: 450px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   padding-bottom: 1rem;
   overflow: hidden;
   position: relative;
-  z-index: 10;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-  transform-style: preserve-3d;
-  will-change: transform, box-shadow;
+  animation: floatCard 6s ease-in-out infinite;
 }
 
-.worker-login .login-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 0, 150, 0.15) 0%,
-    rgba(255, 100, 0, 0.15) 100%
-  );
-  opacity: 0.7;
-  z-index: -1;
-}
-
-.worker-login .login-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background:
-    radial-gradient(
-      circle at center,
-      rgba(255, 255, 255, 0.15) 0%,
-      transparent 70%
-    );
-  opacity: 0.3;
-  z-index: -1;
-  animation: card-shine 10s infinite linear;
-  transform-style: preserve-3d;
-}
-
-.worker-login .login-card:hover {
-  transform: translateY(-8px) translateZ(30px);
-  box-shadow:
-    0 25px 50px rgba(0, 0, 0, 0.6),
-    0 0 30px rgba(255, 0, 150, 0.3),
-    0 0 50px rgba(255, 100, 0, 0.2);
-}
-
-@keyframes card-shine {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.worker-login .card-title {
-  margin: 0 0 2rem;
-  font-size: 2rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  text-align: center;
-  color: #ffffff;
-  text-shadow: 0 0 10px rgba(255, 0, 150, 0.3);
-  letter-spacing: 1px;
-}
-
-.worker-login .flip-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  perspective: 1200px;
-  transform-style: preserve-3d;
-}
-
-.worker-login .flipper {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform-style: preserve-3d;
-  transform-origin: center center;
-}
-
-.worker-login .flipper.flipped {
-  transform: rotateY(180deg);
-}
-
-.worker-login .front, 
-.worker-login .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  padding: 2rem;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  transform-style: preserve-3d;
-}
-
-.worker-login .back {
-  transform: rotateY(180deg);
-}
-
-.worker-login .input-field {
-  background-color: rgba(20, 23, 28, 0.7);
-  border: 1px solid rgba(255, 0, 150, 0.2);
-  color: #ffffff;
-  border-radius: 8px;
-  padding: 0.85rem 1rem;
-  margin-bottom: 1.5rem;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: translateZ(0);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transform-style: preserve-3d;
-  width: 100%;
-  font-size: 1rem;
-}
-
-.worker-login .input-field::placeholder {
-  color: rgba(255, 255, 255, 0.4);
-  transition: color 0.3s ease;
-}
-
-.worker-login .input-field:hover {
-  border-color: rgba(255, 0, 150, 0.4);
-  transform: translateY(-2px) translateZ(5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-}
-
-.worker-login .input-field:focus {
-  outline: none;
-  border-color: rgba(255, 0, 150, 0.8);
-  box-shadow:
-    0 0 0 3px rgba(255, 0, 150, 0.2),
-    0 8px 15px rgba(0, 0, 0, 0.3);
-  transform: translateY(-3px) translateZ(10px);
-  background-color: rgba(20, 23, 28, 0.8);
-}
-
-.worker-login .input-field:focus::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.worker-login .btn {
-  position: relative;
-  background: linear-gradient(135deg,
-    rgba(255, 0, 150, 0.9) 0%,
-    rgba(200, 0, 100, 0.9) 100%);
-  color: #ffffff;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 8px;
-  padding: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  width: 100%;
-  cursor: pointer;
-  margin-top: 1rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  transform: translateZ(0);
-  box-shadow:
-    0 6px 15px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 0, 150, 0.3) inset;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  transform-style: preserve-3d;
-}
-
-.worker-login .btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 100%
-  );
-  z-index: 1;
-}
-
-.worker-login .btn::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg,
-    transparent 20%,
-    rgba(255,255,255,0.3) 50%,
-    transparent 80%);
-  animation: btn-glow 3.5s infinite;
-  z-index: 2;
-}
-
-.worker-login .btn:hover {
-  transform: translateY(-5px) translateZ(15px);
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 0, 150, 0.5) inset,
-    0 0 20px rgba(255, 0, 150, 0.3);
-  background: linear-gradient(135deg,
-    rgba(255, 20, 170, 0.9) 0%,
-    rgba(220, 20, 120, 0.9) 100%);
-}
-
-.worker-login .btn:active {
-  transform: translateY(0) translateZ(5px);
-  box-shadow:
-    0 5px 10px rgba(0, 0, 0, 0.3),
-    0 0 0 1px rgba(255, 0, 150, 0.5) inset;
-  transition: all 0.1s ease;
-}
-
-@keyframes btn-glow {
+@keyframes floatCard {
   0%, 100% {
-    transform: translateX(-150%);
+    transform: translateY(0);
   }
   50% {
-    transform: translateX(150%);
+    transform: translateY(-10px);
   }
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .worker-login .login-card {
-    width: 90%;
-    height: auto;
-    min-height: 500px;
-    max-width: 400px;
+/* Flip container for 3D animation */
+.flip-container {
+  perspective: 1000px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flipper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: 0.6s;
+}
+
+.flipper.flipped {
+  transform: rotateY(180deg);
+}
+
+.front, .back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  top: 0;
+  left: 0;
+  padding: 2rem;
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+/* Card title */
+.card-title {
+  margin: 1rem 0;
+  font-size: 1.5rem;
+  text-transform: capitalize;
+  text-align: center;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Input fields */
+input {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border-radius: 6px;
+  padding: 0.75rem;
+  width: 100%;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+input:focus {
+  outline: none;
+  border-color: #ffd700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+/* Buttons */
+button {
+  
+  color: #000000;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-weight: 600;
+  width: 100%;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+}
+
+button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: 0.5s;
+}
+
+button:hover:before {
+  left: 100%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .login-container {
+    padding: 1rem;
   }
   
-  .worker-login .login-heading {
-    font-size: 2rem;
+  .content-overlay {
+    padding: 1rem;
   }
-  
-  .worker-login .input-field {
-    padding: 0.75rem;
+
+  .login-heading {
+    font-size: 1.8rem;
   }
-  
-  .worker-login .btn {
-    padding: 0.85rem;
+
+  .login-card {
+    min-height: 400px;
   }
-  
-  .worker-login .card-title {
-    font-size: 1.75rem;
-    margin-bottom: 1.5rem;
+
+  .front, .back {
+    padding: 1.5rem;
   }
 }

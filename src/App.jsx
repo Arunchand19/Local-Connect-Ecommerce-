@@ -13,6 +13,7 @@ import Footer from "./components/Footer";
 import Select from "./components/Select";
 import WorkerLogin from "./components/WorkerLogin";
 import WorkersDashboard from "./components/WorkersDashboard";
+import Contact from "./components/Contact";  // Add this import
 
 import Cart from "./components/Cart";             // New Cart page
 import PaymentSuccess from "./components/PaymentSuccess"; // Payment success page
@@ -31,6 +32,8 @@ import TheaterTicketList from "./components/TheaterTicketList";
 import FestivalsTicketList from "./components/FestivalsTicketList";
 import ReviewForm from "./components/ReviewForm"; // Import ReviewForm component
 import WorkerReviews from "./components/WorkerReviews"; // Import WorkerReviews component
+import GamesPage from "./components/games/GamesPage";
+import GamePage from "./components/games/GamePage";
 
 function App() {
   const location = useLocation();
@@ -170,6 +173,11 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/contact" element={<Contact />} /> {/* New Contact route */}
+        
+        {/* Games routes */}
+        <Route path="/games" element={<GamesPage />} />
+        <Route path="/games/:gameId" element={<GamePage />} />
 
       </Routes>
       <Footer />

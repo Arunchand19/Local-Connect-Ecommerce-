@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import './TicketList.css';
+import { CartContext } from './CartContext';
 
 const ConcertTicketList = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { addTicketToCart, notification } = useContext(CartContext);
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5001/api/tickets/concert');
+        const response = await axios.get('http://localhost:5003/api/tickets/concert');
         setTickets(response.data);
         setLoading(false);
       } catch (err) {
@@ -41,6 +43,10 @@ const ConcertTicketList = () => {
     return window.btoa(binary);
   };
 
+  const handleAddToCart = (ticket) => {
+    addTicketToCart(ticket);
+  };
+
   if (loading) {
     return <div className="loading-container">Loading available tickets...</div>;
   }
@@ -56,6 +62,14 @@ const ConcertTicketList = () => {
   return (
     <div className="ticket-list-container">
       <h2>Available Concert Tickets</h2>
+      
+      {/* Notification display */}
+      {notification.show && (
+        <div className={`notification ${notification.type}`}>
+          {notification.message}
+        </div>
+      )}
+      
       <div className="ticket-grid">
         {tickets.map((ticket) => (
           <div key={ticket._id} className="ticket-card">
@@ -80,7 +94,12 @@ const ConcertTicketList = () => {
                 </p>
                 <p className="tickets-available"><strong>Available:</strong> {ticket.availableTickets} tickets</p>
               </div>
-              <button className="buy-ticket-btn">Add to Cart</button>
+              <button 
+                className="buy-ticket-btn" 
+                onClick={() => handleAddToCart(ticket)}
+              >
+                Add to Cart
+              </button>
             </div>
           </div>
         ))}

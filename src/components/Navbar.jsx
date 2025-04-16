@@ -3,7 +3,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 import { CartContext } from './CartContext';
-import { FaShoppingCart } from 'react-icons/fa'; // Import the cart icon
+import { FaShoppingCart } from 'react-icons/fa';
+import GamesMenu from './games/GamesMenu';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useContext(AuthContext);
@@ -37,27 +38,47 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
+        
+        {/* Logo */}
         <div className="navbar-logo">
           <NavLink to="/" onClick={closeMenu}>
             Service Hub
           </NavLink>
         </div>
+        
+        {/* Menu items */}
         <div className={`navbar-menu ${menuOpen ? 'active' : ''}`}>
           <NavLink
             to="/"
             end
             className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
-            onClick={closeMenu}
+            onClick={() => {
+              closeMenu();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
           >
             Home
           </NavLink>
 
           <NavLink
-            to="/workers"
-            className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
-            onClick={closeMenu}
+            to="/"
+            className="nav-item no-underline"
+            onClick={(e) => {
+              e.preventDefault();
+              closeMenu();
+              const workersSection = document.getElementById('workers-availability');
+              if (workersSection) {
+                workersSection.scrollIntoView({ behavior: 'smooth' });
+              } else {
+                navigate('/');
+                setTimeout(() => {
+                  const section = document.getElementById('workers-availability');
+                  if (section) section.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+              }
+            }}
           >
-            Workers
+            Services
           </NavLink>
 
           <NavLink
@@ -68,7 +89,7 @@ const Navbar = () => {
             Events
           </NavLink>
 
-          {/* Reviews button - visible to all users */}
+          {/* Reviews - Dropdown */}
           <div className="nav-dropdown">
             <NavLink
               to="/reviews"
@@ -83,7 +104,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* New Cart Link with Icon */}
+          {/* Cart Link with Icon */}
           <NavLink
             to="/cart"
             className={({ isActive }) => (isActive ? 'nav-item active' : 'nav-item')}
@@ -93,6 +114,7 @@ const Navbar = () => {
             {cartItems.length > 0 && <span className="cart-count">{cartItems.length}</span>}
           </NavLink>
 
+          {/* Authentication */}
           {isAuthenticated ? (
             <button className="nav-item logoff-btn" onClick={handleLogout}>
               Logoff
@@ -114,8 +136,14 @@ const Navbar = () => {
           >
             Contact
           </NavLink>
-        </div>
 
+          {/* Games Menu */}
+          <div className="nav-item">
+            <GamesMenu />
+          </div>
+        </div>
+        
+        {/* Mobile Toggle */}
         <div className={`navbar-toggle ${menuOpen ? 'active' : ''}`} onClick={toggleMenu}>
           <span className="bar"></span>
           <span className="bar"></span>
